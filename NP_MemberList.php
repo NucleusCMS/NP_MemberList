@@ -101,8 +101,7 @@ class NP_MemberList extends NucleusPlugin {
    function doSkinVar($skinType) {
 		global $blog, $CONF, $manager;
 
-		$mtable = sql_table('member');
-		$ttable = sql_table('team');
+		$tbl_team = sql_table('team');
 
 		$parameters = func_get_args();
 
@@ -113,11 +112,11 @@ class NP_MemberList extends NucleusPlugin {
 		else if ($parameters[1] == "current")
 		{
 			if ($parameters[2] == "noteam") {
-				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $ttable WHERE tblog=".$blog->getID().")";
+				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$blog->getID().")";
 				$other = " GROUP by mnumber"; 
 			}
 			else {
-				$blog_id = " JOIN $ttable ON mnumber = tmember WHERE tblog=".$blog->getID();
+				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$blog->getID();
 				$other = " GROUP by mnumber"; 
 			}
 		}
@@ -125,11 +124,11 @@ class NP_MemberList extends NucleusPlugin {
 		else if ($parameters[1] == "default")
 		{ 
 			if ($parameters[2] == "noteam") {
-				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $ttable WHERE tblog=".$CONF['DefaultBlog'].")";
+				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$CONF['DefaultBlog'].")";
 				$other = " GROUP by mnumber"; 
 			}
 			else {
-				$blog_id = " JOIN $ttable ON mnumber = tmember WHERE tblog=".$CONF['DefaultBlog'];        
+				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$CONF['DefaultBlog'];        
 				$other = " GROUP by mnumber";
 			}
 		}
@@ -137,11 +136,11 @@ class NP_MemberList extends NucleusPlugin {
 		else if (is_numeric($parameters[1]))
 		{ 
 			if ($parameters[2] == "noteam") {
-				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $ttable WHERE tblog=".$parameters[1].")";
+				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$parameters[1].")";
 				$other = " GROUP by mnumber"; 
 			}
 			else {
-				$blog_id = " JOIN $ttable ON mnumber = tmember WHERE tblog=".$parameters[1];
+				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$parameters[1];
 				$other = " GROUP by mnumber"; 
 			}
 		}
@@ -149,19 +148,19 @@ class NP_MemberList extends NucleusPlugin {
 		else {
 			$selectedbid = getBlogIDFromName($parameters[1]);
 			if ($parameters[2] == "noteam") {
-				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $ttable WHERE tblog=".$selectedbid.")";
+				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$selectedbid.")";
 				$other = " GROUP by mnumber"; 
 			}
 			else {
-				$blog_id = " JOIN $ttable ON mnumber = tmember WHERE tblog=".$selectedbid;
+				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$selectedbid;
 				$other = " GROUP by mnumber";
-			}				
+			}
 		}
 	 
 		$tmpl = $this->getOption('format');
 
 		echo $this->getOption('header'); //display header
-		$query = "SELECT mnumber, mname, mrealname FROM $mtable $blog_id $other";
+		$query = sprintf('SELECT mnumber, mname, mrealname FROM %s %s %s', sql_table('member'),$blog_id,$other);
         $membersresult = sql_query($query);
 		$out = "";
         while ($row = sql_fetch_object($membersresult)) {
