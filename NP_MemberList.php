@@ -73,19 +73,19 @@ class NP_MemberList extends NucleusPlugin {
 
 	function init() {
 		$language = str_replace( array('\\','/'), '', getLanguageName());
-		if ($language == 'japanese-utf8')
+		if ($language === 'japanese-utf8')
 		{
-			define(_MLIST_DESC,				"メンバリスト。 スキンへの記述： &lt;%MemberList%&gt; 詳細を指定： &lt;%MemberList(ブログモード)%&gt; ブログモード: current, default, ブログの短縮名, ブログID");
-			define(_MLIST_OPT1,				"一覧のヘッダ");
-			define(_MLIST_OPT2,				"一覧の本体");
-			define(_MLIST_OPT3,				"一覧のフッタ");
+			define(_MLIST_DESC, "メンバリスト。 スキンへの記述： &lt;%MemberList%&gt; 詳細を指定： &lt;%MemberList(ブログモード)%&gt; ブログモード: current, default, ブログの短縮名, ブログID");
+			define(_MLIST_OPT1, '一覧のヘッダ');
+			define(_MLIST_OPT2, '一覧の本体');
+			define(_MLIST_OPT3, '一覧のフッタ');
 		}
 		else
 		{
-			define(_MLIST_DESC,				"Member list. Skinvar： &lt;%MemberList%&gt; More specific: &lt;%MemberList(BlogMode)%&gt; BlogMode: current, default, BlogShortname, BlogID");
-			define(_MLIST_OPT1,				"Header");
-			define(_MLIST_OPT2,				"List Formatting");
-			define(_MLIST_OPT3,				"Footer");
+			define(_MLIST_DESC, "Member list. Skinvar： &lt;%MemberList%&gt; More specific: &lt;%MemberList(BlogMode)%&gt; BlogMode: current, default, BlogShortname, BlogID");
+			define(_MLIST_OPT1, 'Header');
+			define(_MLIST_OPT2, 'List Formatting');
+			define(_MLIST_OPT3, 'Footer');
 		}
 	}
  
@@ -102,65 +102,52 @@ class NP_MemberList extends NucleusPlugin {
 		$tbl_team = sql_table('team');
 
 		$parameters = func_get_args();
-
+		
 		if (!$parameters[1])
 		{
-			$blog_id = ""; $other = " ORDER by mnumber";
+			$blog_id = '';
+			$other = ' ORDER by mnumber';
 		}
-		else if ($parameters[1] == "current")
+		elseif ($parameters[1] === 'current')
 		{
-			if ($parameters[2] == "noteam") {
+			if ($parameters[2] === 'noteam')
 				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$blog->getID().")";
-				$other = " GROUP by mnumber"; 
-			}
-			else {
+			else
 				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$blog->getID();
-				$other = " GROUP by mnumber"; 
-			}
 		}
 		// show members in default blog's team
-		else if ($parameters[1] == "default")
+		elseif ($parameters[1] === 'default')
 		{ 
-			if ($parameters[2] == "noteam") {
+			if ($parameters[2] === 'noteam')
 				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$CONF['DefaultBlog'].")";
-				$other = " GROUP by mnumber"; 
-			}
-			else {
+			else
 				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$CONF['DefaultBlog'];        
-				$other = " GROUP by mnumber";
-			}
 		}
 		// show members from the selected blogid
-		else if (is_numeric($parameters[1]))
+		elseif (is_numeric($parameters[1]))
 		{ 
-			if ($parameters[2] == "noteam") {
+			if ($parameters[2] === 'noteam')
 				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$parameters[1].")";
-				$other = " GROUP by mnumber"; 
-			}
-			else {
+			else
 				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$parameters[1];
-				$other = " GROUP by mnumber"; 
-			}
 		}
 		// show members from the selected blogname
 		else {
 			$selectedbid = getBlogIDFromName($parameters[1]);
-			if ($parameters[2] == "noteam") {
+			if ($parameters[2] === 'noteam')
 				$blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$selectedbid.")";
-				$other = " GROUP by mnumber"; 
-			}
-			else {
+			else
 				$blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$selectedbid;
-				$other = " GROUP by mnumber";
-			}
 		}
 	 
 		$tmpl = $this->getOption('format');
 
 		echo $this->getOption('header'); //display header
+		
+		if(!isset($other)) $other = ' GROUP by mnumber';
 		$query = sprintf('SELECT mnumber, mname, mrealname FROM %s %s %s', sql_table('member'),$blog_id,$other);
         $membersresult = sql_query($query);
-		$out = "";
+		$out = '';
         while ($row = sql_fetch_object($membersresult)) {
 			
 			$link = createMemberLink($row->mnumber);
@@ -230,5 +217,4 @@ class NP_MemberList extends NucleusPlugin {
       }
       else return '';
    }
-   
 }
