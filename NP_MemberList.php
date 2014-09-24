@@ -88,7 +88,7 @@ class NP_MemberList extends NucleusPlugin {
    }
 
 	function init() {
-		$language = ereg_replace( '[\\|/]', '', getLanguageName());
+		$language = str_replace( array('\\','/'), '', getLanguageName());
 		if ($language == "japanese-utf8")
 		{
 			define(_MLIST_DESC,				"メンバリスト。 スキンへの記述： &lt;%MemberList%&gt; 詳細を指定： &lt;%MemberList(ブログモード)%&gt; ブログモード: current, default, ブログの短縮名, ブログID");
