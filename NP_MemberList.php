@@ -250,4 +250,3 @@ class NP_MemberList extends NucleusPlugin {
    }
    
 }
-?>
