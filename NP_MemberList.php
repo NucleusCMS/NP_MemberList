@@ -60,32 +60,18 @@
 	- add second parameter noteam option to list all members not on given team
   */
  
-if (!function_exists('sql_table'))
-{
-        function sql_table($name) {
-                return 'nucleus_' . $name;
-        }
-}
- 
 class NP_MemberList extends NucleusPlugin {
  
    function getEventList() { return array(); }
    function getName() { return 'MemberList'; }
    function getAuthor()  { return 'Legolas | PiyoPiyoNaku'; }
    function getURL()  { return 'http://www.renege.net/'; }
-   function getVersion() { return '1.85'; }
+   function getVersion() { return '1.86'; }
    function getDescription() {
       return _MLIST_DESC;
    }
- 
-   function supportsFeature($feature) {
-     switch($feature) {
-       case 'SqlTablePrefix':
-          return 1;
-       default:
-          return 0;
-      }
-   }
+   function supportsFeature($feature) { return in_array ($feature, array ('SqlTablePrefix', 'SqlApi'));}
+   function getMinNucleusVersion()    { return '350'; }
 
 	function init() {
 		$language = str_replace( array('\\','/'), '', getLanguageName());
@@ -176,9 +162,9 @@ class NP_MemberList extends NucleusPlugin {
 
 		echo $this->getOption('header'); //display header
 		$query = "SELECT mnumber, mname, mrealname FROM $mtable $blog_id $other";
-        $membersresult = mysql_query($query);
+        $membersresult = sql_query($query);
 		$out = "";
-        while ($row = mysql_fetch_object($membersresult)) {
+        while ($row = sql_fetch_object($membersresult)) {
 			
 			$link = createMemberLink($row->mnumber);
 			$myname = $row->mname;
