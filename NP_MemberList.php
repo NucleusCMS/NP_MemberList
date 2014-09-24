@@ -168,10 +168,9 @@ class NP_MemberList extends NucleusPlugin {
 			$link = createMemberLink($row->mnumber);
 			$myname = $row->mname;
 
-			$pluginName = 'NP_Alias';
-			if ($manager->pluginInstalled($pluginName))
+			if ($manager->pluginInstalled('NP_Alias'))
 			{
-				$pluginObject =& $manager->getPlugin($pluginName);
+				$pluginObject =& $manager->getPlugin('NP_Alias');
 				if ($pluginObject) {
 					$myname = $pluginObject->getAliasfromMemberName($myname);
 				}
