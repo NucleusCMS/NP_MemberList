@@ -110,34 +110,37 @@ class NP_MemberList extends NucleusPlugin {
         }
         elseif ($parameters[1] === 'current')
         {
+            $vs = array($tbl_team, $blog->getID());
             if ($parameters[2] === 'noteam')
-                $blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$blog->getID().")";
+                $blog_id = vsprintf(' WHERE mnumber NOT IN(SELECT tmember FROM %s WHERE tblog=%s)', $vs);
             else
-                $blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$blog->getID();
+                $blog_id = vsprintf(' JOIN %s ON mnumber = tmember WHERE tblog=%s', $vs);
         }
         // show members in default blog's team
         elseif ($parameters[1] === 'default')
-        { 
+        {
+            $vs = array($tbl_team, $CONF['DefaultBlog']);
             if ($parameters[2] === 'noteam')
-                $blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$CONF['DefaultBlog'].")";
+                $blog_id = vsprintf(' WHERE mnumber NOT IN(SELECT tmember FROM %s WHERE tblog=%s)', $vs);
             else
-                $blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$CONF['DefaultBlog'];        
+                $blog_id = vsprintf(' JOIN %s ON mnumber = tmember WHERE tblog=%s', $vs);
         }
         // show members from the selected blogid
         elseif (is_numeric($parameters[1]))
-        { 
+        {
+            $vs = array($tbl_team, $parameters[1]);
             if ($parameters[2] === 'noteam')
-                $blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$parameters[1].")";
+                $blog_id = vsprintf(' WHERE mnumber NOT IN(SELECT tmember FROM %s WHERE tblog=%s)', $vs);
             else
-                $blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$parameters[1];
+                $blog_id = vsprintf(' JOIN %s ON mnumber = tmember WHERE tblog=%s', $vs);
         }
         // show members from the selected blogname
         else {
-            $selectedbid = getBlogIDFromName($parameters[1]);
+            $vs = array($tbl_team, getBlogIDFromName($parameters[1]));
             if ($parameters[2] === 'noteam')
-                $blog_id = " WHERE mnumber NOT IN(SELECT tmember FROM $tbl_team WHERE tblog=".$selectedbid.")";
+                $blog_id = vsprintf(' WHERE mnumber NOT IN(SELECT tmember FROM %s WHERE tblog=%s)', $vs);
             else
-                $blog_id = " JOIN $tbl_team ON mnumber = tmember WHERE tblog=".$selectedbid;
+                $blog_id = vsprintf(' JOIN %s ON mnumber = tmember WHERE tblog=%s', $vs);
         }
      
         $tmpl = $this->getOption('format');
