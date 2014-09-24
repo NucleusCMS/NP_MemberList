@@ -62,20 +62,18 @@
  
 class NP_MemberList extends NucleusPlugin {
  
-   function getEventList() { return array(); }
-   function getName() { return 'MemberList'; }
-   function getAuthor()  { return 'Legolas | PiyoPiyoNaku'; }
-   function getURL()  { return 'http://www.renege.net/'; }
-   function getVersion() { return '1.86'; }
-   function getDescription() {
-      return _MLIST_DESC;
-   }
+   function getEventList()   { return array(); }
+   function getName()        { return 'MemberList'; }
+   function getAuthor()      { return 'Legolas | PiyoPiyoNaku'; }
+   function getURL()         { return 'http://www.renege.net/'; }
+   function getVersion()     { return '1.86'; }
+   function getDescription() { return _MLIST_DESC;}
    function supportsFeature($feature) { return in_array ($feature, array ('SqlTablePrefix', 'SqlApi'));}
    function getMinNucleusVersion()    { return '350'; }
 
 	function init() {
 		$language = str_replace( array('\\','/'), '', getLanguageName());
-		if ($language == "japanese-utf8")
+		if ($language == 'japanese-utf8')
 		{
 			define(_MLIST_DESC,				"メンバリスト。 スキンへの記述： &lt;%MemberList%&gt; 詳細を指定： &lt;%MemberList(ブログモード)%&gt; ブログモード: current, default, ブログの短縮名, ブログID");
 			define(_MLIST_OPT1,				"一覧のヘッダ");
